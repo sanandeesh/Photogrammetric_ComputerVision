@@ -1,4 +1,4 @@
-# Photogrammetric_ComputerVision
+# Photogrammetric ComputerVision
 A deep dive into classical and modern 3d Computer Vision techniques.
 
 # DLT Triangulation of Point Pairs from KITTI Stereo Cameras
@@ -25,6 +25,7 @@ To run within a virtual environment, create a separate virtual environment for t
 
 ## Usage:
 `pytest` Run Unit Tests
+
 `python3 main_stereo_dlt_triangulation.py` Run DLT Triangulation over example image pair
 
 `deactive` Deactivate Virtual Environment before closing terminal.
