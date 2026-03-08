@@ -1,7 +1,7 @@
 # Photogrammetric ComputerVision
-A deep dive into classical and modern 3d Computer Vision techniques based on calibrated\synchronized stereo camera imagery provided by the "KITTI Dataset"
+A deep dive into classical & modern 3D Computer Vision concepts and techniques applied here to the calibrated\synchronized stereo camera imagery provided by the "KITTI Dataset"
 
-# DLT Triangulation of Point Pairs from KITTI Stereo Cameras
+## I. DLT Triangulation of Point Pairs from KITTI Stereo Cameras
 
 This Python script demonstrates DLT Triangulation (described by MVG) of corresponding image point-feature pairs.
 
