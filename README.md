@@ -5,12 +5,13 @@ A deep dive into classical & modern 3D Computer Vision concepts and techniques a
 
 This Python script demonstrates DLT Triangulation (described by MVG) of corresponding image point-feature pairs.
 
-Please watch: [Full Video Recordings on YT](https://pip.pypa.io/en/stable/)
+Please watch: 
+[Full Video Recordings on YouTube](https://www.youtube.com/watch?v=IipyH1v4x2k&list=PL9IYlUueNFoa8mLsTHtWhH6aflSdcyqWZ)
 
-Note how the triangulation resolution diminishes rapidly along the Line-of-Sight (Z axis).
-Point color represents Z-Axis depth. 
 ![Triangulation Results](./images/DLT_Triangulation_0.png)
 ![Triangulation Results](./images/DLT_Triangulation_1.png)
+Note how the triangulation resolution diminishes rapidly along the Line-of-Sight (Z axis).
+Point color represents Z-Axis depth. 
 
 ## Installation:
 Only `numpy, matplotlib, scipy, scikit-image, pytest` packages are required for this script.
