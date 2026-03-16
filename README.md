@@ -6,7 +6,7 @@ A deep dive into classical & modern 3D Computer Vision concepts and techniques a
 This Python script demonstrates DLT Triangulation (described by MVG) of corresponding image point-feature pairs.
 
 Please watch: 
-[Full Video Recordings on YouTube](https://www.youtube.com/watch?v=IipyH1v4x2k&list=PL9IYlUueNFoa8mLsTHtWhH6aflSdcyqWZ)
+[Full Video Recordings on YouTube](https://www.youtube.com/watch?v=w3AwZM1RpVQ&list=PL9IYlUueNFoa8mLsTHtWhH6aflSdcyqWZ&index=1)
 
 ![Triangulation Results](./images/DLT_Triangulation_0.png)
 ![Triangulation Results](./images/DLT_Triangulation_1.png)
