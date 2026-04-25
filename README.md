@@ -47,10 +47,10 @@ To run within a virtual environment, create a separate virtual environment for t
 - **Original Code**: https://github.com/raulmur/ORB_SLAM2
 
 Please watch: 
-[My ORB-SLAM2 Ouptuts on YouTube](https://www.youtube.com/watch?v=-Z-bCY-UboU&list=PL9IYlUueNFoa8mLsTHtWhH6aflSdcyqWZ&index=10)
+[My ORB-SLAM2 Stereo-KITTI Ouptuts on YouTube](https://www.youtube.com/watch?v=-Z-bCY-UboU&list=PL9IYlUueNFoa8mLsTHtWhH6aflSdcyqWZ&index=10)
 
 Several minor tweaks were made to run on: 
-- Ubuntu 24.04.4, gcc 13.3.0, C++ 14, opencv 4.6.0, eigen3 3.4.0, Pangolin 0.9.5
+- Ubuntu 24.04.4, C++ 14, opencv 4.6.0, eigen3 3.4.0, Pangolin 0.9.5
 
 Apply `ORBSLAM2RefactorForUpgradedDeps.patch` to your cloned ORB-SLAM2 repo to run locally.
 
