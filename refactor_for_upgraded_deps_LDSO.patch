@@ -1,0 +1,28 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7327661..b90afda 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -28,7 +28,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+ 
+ # required libs
+-find_package(Eigen3 REQUIRED)
++find_package(Eigen3 REQUIRED NO_MODULE)
+ find_package(OpenCV REQUIRED)
+ find_package(Glog REQUIRED)
+ find_package(Pangolin REQUIRED)
+diff --git a/thirdparty/DBoW3/src/BowVector.h b/thirdparty/DBoW3/src/BowVector.h
+index d8c17e0..f6084f1 100644
+--- a/thirdparty/DBoW3/src/BowVector.h
++++ b/thirdparty/DBoW3/src/BowVector.h
+@@ -10,6 +10,10 @@
+ #ifndef __D_T_BOW_VECTOR__
+ #define __D_T_BOW_VECTOR__
+ 
++#include <ostream>
++#include <string>
++#include <cstdint>
++
+ #include <map>
+ #include <vector>
+ #include "exports.h"
