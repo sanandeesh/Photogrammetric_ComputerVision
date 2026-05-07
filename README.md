@@ -77,8 +77,9 @@ Few minor tweaks were made to run on:
 Apply `refactor_for_upgraded_deps_LDSO.patch` to your cloned LDSO repo to run locally.
 
 LDSO employs 
-	- the original DSO [1] as a camera tracking front-end 
-	- an additional Loop-Closure-Detection and Pose-Graph Optimization as a back-end.
+
+- the original DSO [1] as a camera tracking front-end 
+- an additional Loop-Closure-Detection and Pose-Graph Optimization as a back-end.
 
 See below the difference between the Trajectory before (red line) and after (yellow line) Loop-Detection & Global Optimization.
 
