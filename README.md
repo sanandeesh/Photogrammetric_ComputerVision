@@ -74,14 +74,15 @@ Few minor tweaks were made to run on:
 
     Ubuntu 24.04.4, C++ 14, opencv 4.6.0, eigen3 3.4.0, Pangolin 0.9.5
 
-Apply refactor_for_upgraded_deps_LDSO.patch to your cloned LDSO repo to run locally.
+Apply `refactor_for_upgraded_deps_LDSO.patch` to your cloned LDSO repo to run locally.
 
 LDSO employs 
 	- the original DSO [1] as a camera tracking front-end 
 	- an additional Loop-Closure-Detection and Pose-Graph Optimization as a back-end.
 
 See below the difference between the Trajectory before (red line) and after (yellow line) Loop-Detection & Global Optimization.
-![LDSO Outputs](./images/LDSO_Ouputs.png)
+
+![LDSO Outputs](./images/LDSO_Outputs.png)
 
 As a monocular SLAM, it accumulates drift\error in the unobservable degrees-of-freedom; i.e. global translation, rotation and scale
 Upon Loop Closure detection, this accumulated error is resolved by a global Pose-Graph Optimization.
