@@ -1,26 +1,81 @@
 # Photogrammetric ComputerVision
-A deep dive into classical & modern 3D Computer Vision concepts and techniques applied here to the calibrated\synchronized stereo camera imagery provided by the "KITTI Dataset"
+A deep dive into classical & modern 3D Computer Vision concepts and techniques applied to the world famous stereo camera "KITTI Dataset"
 
-## I. DLT Triangulation of Point Pairs from KITTI Stereo Cameras
+## I. (Semi) Monocular Visual Inertial Tracking with EKF
+Please see the [VIT-EKF README](VIT_EKF/README.md) for **full description** of the filter.
 
-DLT Triangulation (described by MVG) of corresponding image point-feature pairs.
+[Full Video Recordings on YouTube](https://www.youtube.com/watch?v=qI3MzEmzQrs&list=PL9IYlUueNFoa8mLsTHtWhH6aflSdcyqWZ&index=1)
+
+The 3D coordinates of visual features are triangulated and tracked (in the camera Ego-Frame) with an EKF. Hence, each track is a _3D Gaussian distribution_: a (3,1) mean $\mu$ and (3,3) covariance $\Sigma$.
+- The Prediction Step extrapolates the Track-Distribution using IMU-derived forward\lateral translation & yaw\pitch rotation. 
+- The Measurement-Correction Step applies the Jacobian of the (normalized non-homogenous) Camera Projection (i.e. Measurement) model. 
+
+<div align="center">
+    <img src="./images/vitekf_full.png" alt="VIT EKF Output" width="100%">
+</div>
+
+## II. DLT Triangulation of Point Pairs from KITTI Stereo Cameras
 
 Please watch: 
 [Full Video Recordings on YouTube](https://www.youtube.com/watch?v=w3AwZM1RpVQ&list=PL9IYlUueNFoa8mLsTHtWhH6aflSdcyqWZ&index=1)
 
-![Triangulation Results](./images/DLT_Triangulation_0.png)
-![Triangulation Results](./images/DLT_Triangulation_1.png)
+DLT Triangulation (described by MVG) of corresponding image point-feature pairs ($$(x,y), (x',y')$$), using 3x4 Camera Matrix pair $$\mathbf{P}, \mathbf{P}'$$, where $$\mathbf{P}^i$$ is the $$i^{th}$$ row.
+The (4x1 Homogenous) solution is the unit singular vector corresponding to the smalest singular value of (6x4) matrix $$A$$.
+
+$$
+A = \begin{bmatrix}
+x\mathbf{p}^{3T} - \mathbf{p}^{1T} \\
+y\mathbf{p}^{3T} - \mathbf{p}^{2T} \\
+x\mathbf{p}^{2T} - y\mathbf{p}^{1T} \\
+x'\mathbf{p'}^{3T} - \mathbf{p'}^{1T} \\
+y'\mathbf{p'}^{3T} - \mathbf{p'}^{2T} \\
+x'\mathbf{p'}^{2T} - y'\mathbf{p'}^{1T}
+\end{bmatrix}
+$$
+
+The math is implemented from scratch with `numpy` in `main_stereo_dlt_triangulation.py`
+
+<div align="center">
+    <img src="./images/DLT_Triangulation_0.png" alt="Triangulation Results" width="70%">
+</div>
+
+<div align="center">
+    <img src="./images/DLT_Triangulation_1.png" alt="Triangulation Results" width="70%">
+</div>
+
 Note how the triangulation resolution diminishes rapidly along the Line-of-Sight (Z axis).
 Point color represents Z-Axis depth. 
 
-## II. Optical Flow from KITTI Camera Sequance
-
-Optical Flow (described by Ma et al) of a fixed grid of points over a camera image sequence. 
-It is Multi-Scale (i.e. recusrsively downsamples a pyramid of images) and applies Gradient based (Lucas and Kanade) computations. 
+## III. Optical Flow from KITTI Camera Sequance
 
 [Full Video Recordings on YouTube](https://www.youtube.com/watch?v=mm-BLc3SGRY&list=PL9IYlUueNFoa8mLsTHtWhH6aflSdcyqWZ&index=7)
 
-![Optical Flow Results](./images/OpticalFlowOutput_Reduced.png)
+Optical Flow (described by Ma et al) of a fixed grid of points over a camera image sequence. 
+It is Multi-Scale (i.e. recursively downsamples a pyramid of images) and applies Gradient based (Lucas and Kanade) computations. 
+
+A least squares solution to pixel velocity (which fulfills the "Brightness Constancy Constraint") is given by
+
+$$u = -G^{-1}\mathbf{b}$$
+
+where spatial $I_x, I_y$ and temporal $I_t$ image gradients are applied as 
+
+$$
+G = \begin{bmatrix}
+\Sigma I^{2}_{x},   \Sigma I_{x} I_{y} \\
+\Sigma I_{y} I_{x}, \Sigma I^{2}_{y} 
+\end{bmatrix}
+, 
+\mathbf{b} = \begin{bmatrix}
+\Sigma I_{x} I_{t} \\
+\Sigma I_{y} I_{t}  
+\end{bmatrix}
+$$
+
+The math is implemented from scratch with `numpy` is `main_optical_flow.py`
+
+<div align="center">
+    <img src="./images/OpticalFlowOutput_Reduced.png" alt="Optical Flow Results" width="70%">
+</div>
 
 ## Installation:
 Only `numpy, matplotlib, scipy, scikit-image, pytest` packages are required for this script.
@@ -35,6 +90,8 @@ To run within a virtual environment, create a separate virtual environment for t
 
 ## Usage:
 `pytest` Run Unit Tests
+
+`python3 main_visual_inertial_tracking_EKF.py` Run the Visual-Inertial-Tracking EKF
 
 `python3 main_stereo_dlt_triangulation.py` Run DLT Triangulation over example image pair
 
