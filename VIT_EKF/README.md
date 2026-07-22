@@ -1,6 +1,6 @@
 # (Semi) Monocular Visual-Inertial-Tracking with EKF
 
-Please watch Full Video Recordings on YT.
+Please Watch [Full Video Recordings on YouTube](https://www.youtube.com/watch?v=qI3MzEmzQrs&list=PL9IYlUueNFoa8mLsTHtWhH6aflSdcyqWZ&index=1)
 
 **Summary:** 
 Given the KITTI stereo-camera dataset, **track the 3D position of points** in the **local frame of the Left Camera**.
@@ -29,14 +29,23 @@ A new feature is initialized each time a feature leaves the field of view, or is
 ## 2. State Space & Prediction Step
 Each tracked point is represented as **3-D Gaussian Distribution**
 
-$\mu = \begin{bmatrix} \mu_x \\ \mu_y \\ \mu_z \end{bmatrix}$, 
-$\Sigma = \begin{bmatrix} \sigma_x^2 & \sigma_{xy} & \sigma_{xz} \\ \sigma_{yx} & \sigma_y^2 & \sigma_{yz} \\ \sigma_{zx} & \sigma_{zy} & \sigma_z^2 \end{bmatrix}$
+$$
+\mu = \begin{bmatrix} \mu_x \\ 
+                      \mu_y \\ 
+                      \mu_z \end{bmatrix},
+$$
+
+$$
+\Sigma = \begin{bmatrix} \sigma_x^2 & \sigma_{xy} & \sigma_{xz} \\ 
+                         \sigma_{yx} & \sigma_y^2 & \sigma_{yz} \\ 
+                         \sigma_{zx} & \sigma_{zy} & \sigma_z^2 \end{bmatrix}
+$$
 
 ### 2.1 Initialize Track Covariance Matrix
 Triangulation accuracy is highly **quantized** along the Z-axis with rapidly decreasing resolution.
 
 <div align="center">
-    <img src="../images/z_quantization.png" alt="Depth Quantization" width="90%">
+    <img src="../images/z_quantization.png" alt="Depth Quantization" width="80%">
 </div>
 
 **Fig 2**: Quantization of Depth Resolution Degrades Rapidly along Line-of-Sight $z$*
@@ -53,7 +62,11 @@ $\sigma_z^2 = \frac{z^4 \sigma_{\text{pix}}^2}{387.5744^2 \cos{\theta_\text{yaw}
 
 Assuming $\sigma_x^2 = \sigma_y^2 = \sigma_z^2/100.0$, then:
 
-$\Sigma = \begin{bmatrix} \sigma_x^2 & 0.0 & 0.0 \\ 0.0 & \sigma_y^2 & 0.0 \\ 0.0 & 0.0 & \sigma_z^2 \end{bmatrix}$
+$$
+\Sigma = \begin{bmatrix} \sigma_x^2 & 0.0 & 0.0 \\ 
+                          0.0 & \sigma_y^2 & 0.0 \\ 
+                          0.0 & 0.0 & \sigma_z^2 \end{bmatrix}
+$$
 
 can be rotated into the **pixel LoS**:
 $\Sigma_\text{initial} = R_x R_y \Sigma R_y^T R_x^T$
@@ -74,7 +87,19 @@ $$
     \mu_{\text{predicted}} = R_x R_y (\mu - \delta_\text{shift})
 $$
 
-$\mu_{\text{predicted}} = \begin{bmatrix} 1.0 & 0.0 & 0.0 \\ 0.0 & \cos(\delta_\text{pitch}) & -\sin(\delta_\text{pitch}) \\ 0.0 & \sin(\delta_\text{pitch}) & \cos(\delta_\text{pitch}) \end{bmatrix} \begin{bmatrix} \cos(\delta_\text{yaw}) & 0.0 & \sin(\delta_\text{yaw}) \\ 0.0 & 1.0 & 0.0 \\ -\sin(\delta_\text{yaw}) & 0.0 & \cos(\delta_\text{yaw}) \end{bmatrix} \left( \begin{bmatrix} \mu_x \\ \mu_y \\ \mu_z \end{bmatrix} - \begin{bmatrix} \delta_x \\ 0.0 \\ \delta_z \end{bmatrix} \right)$
+$$
+\mu_{\text{predicted}} = \begin{bmatrix} 1.0 & 0.0 & 0.0 \\ 
+                        0.0 & \cos(\delta_\text{pitch}) & -\sin(\delta_\text{pitch}) \\ 
+                        0.0 & \sin(\delta_\text{pitch}) & \cos(\delta_\text{pitch}) \end{bmatrix} 
+                        \begin{bmatrix} \cos(\delta_\text{yaw}) & 0.0 & \sin(\delta_\text{yaw}) \\ 
+                                                                0.0 & 1.0 & 0.0 \\ 
+                                        -\sin(\delta_\text{yaw}) & 0.0 & \cos(\delta_\text{yaw}) \end{bmatrix} 
+                        \left( \begin{bmatrix} \mu_x \\ 
+                                               \mu_y \\ 
+                                               \mu_z \end{bmatrix} - \begin{bmatrix} \delta_x \\ 
+                                                                                          0.0 \\ 
+                                                                                          \delta_z \end{bmatrix} \right)
+$$
 
 The predicted Covariance Matrix is
 
@@ -89,12 +114,22 @@ $Q = J_Q \Sigma_U J_Q^T$
 
 where $\Sigma_U$ is the covariance of control inputs
 
-$\Sigma_U = \begin{bmatrix} \sigma_{\delta x}^2 & 0.0 & 0.0 & 0.0 \\ 0.0 & \sigma_{\delta z}^2 & 0.0 & 0.0 \\ 0.0 & 0.0 & \sigma_{\delta \text{yaw}}^2 & 0.0 \\ 0.0 & 0.0 & 0.0 & \sigma_{\delta \text{pitch}}^2 \end{bmatrix}$
+$$
+\Sigma_U = \begin{bmatrix} \sigma_{\delta x}^2 & 0.0 & 0.0 & 0.0 \\ 
+                           0.0 & \sigma_{\delta z}^2 & 0.0 & 0.0 \\ 
+                           0.0 & 0.0 & \sigma_{\delta \text{yaw}}^2 & 0.0 \\ 
+                           0.0 & 0.0 & 0.0 & \sigma_{\delta \text{pitch}}^2 \end{bmatrix}
+$$
 
 (the values are estimated as per Motion Model in *Probabilistic Robotics by Thrun et al*)
 
 and $J_Q$ is the Jacobian of the State-Transition-Model with respect to the Control Parameters
-$J = \begin{bmatrix} -1.0 & 0 & -1.0 \cdot \delta_z + 1.0 \cdot \mu_z & 0 \\ 0 & 0 & 0 & \delta_z - \mu_z \\ 0 & -1 & \delta_x - \mu_x & 1.0 \cdot \mu_y \end{bmatrix}$
+
+$$
+J = \begin{bmatrix} -1.0 & 0 & -1.0 \cdot \delta_z + 1.0 \cdot \mu_z & 0 \\ 
+                                            0 & 0 & 0 & \delta_z - \mu_z \\ 
+                                            0 & -1 & \delta_x - \mu_x & 1.0 \cdot \mu_y \end{bmatrix}
+$$
 
 (assuming $\delta_\text{yaw} = \delta_\text{pitch} = 0.0$ for simplicity)
 
@@ -112,16 +147,28 @@ i.e. noise in camera yaw\pitch adds uncertainty horizontally\vertically and incr
 ### 3.1 Compute Jacobian of Projection Model $H$
 The standard Homogenous Camera projection is given as:
 
-$PX = \begin{bmatrix} f_x & 0.0 & p_x & 0.0 \\ 0.0 & f_y & p_y & 0.0 \\ 0.0 & 0.0 & 1.0 & 0.0 \end{bmatrix}$ $\begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix}$
+$$
+PX = \begin{bmatrix} f_x & 0.0 & p_x & 0.0 \\ 
+                     0.0 & f_y & p_y & 0.0 \\ 
+                     0.0 & 0.0 & 1.0 & 0.0 \end{bmatrix}$ $\begin{bmatrix} x \\ 
+                                                                           y \\ 
+                                                                           z \\ 1 \end{bmatrix}
+$$
 
 We reduce it to 2x3 to match our non-homogenous state\measurement spaces, and include the normalization by $z$:
 
-$PX = \begin{bmatrix} \frac{f_x}{Z} & 0.0 & \frac{c_x}{Z} \\ 0.0 & \frac{f_y}{Z} & \frac{c_y}{Z} \end{bmatrix}$ $\begin{bmatrix} x \\ y \\ z\end{bmatrix}$
+$$
+PX = \begin{bmatrix} \frac{f_x}{Z} & 0.0 & \frac{c_x}{Z} \\ 
+                      0.0 & \frac{f_y}{Z} & \frac{c_y}{Z} \end{bmatrix}$ $\begin{bmatrix} x \\ 
+                                                                                          y \\ 
+                                                                                          z\end{bmatrix}
+$$
 
 The normalization makes this a **non-linear model**, and hence it must be linearized into a Jacobian for usage in the Measurement-Correction step.
 
 $$
-    \boxed{H = \begin{bmatrix} \frac{f_x}{Z} & 0.0 & -\frac{f_x \cdot X}{Z^2} \\ 0.0 & \frac{f_y}{Z} & -\frac{f_y \cdot Y}{Z^2} \end{bmatrix}}
+    \boxed{H = \begin{bmatrix} \frac{f_x}{Z} & 0.0 & -\frac{f_x \cdot X}{Z^2} \\ 
+                               0.0 & \frac{f_y}{Z} & -\frac{f_y \cdot Y}{Z^2} \end{bmatrix}}
 $$
 
 This "Projection Jacobian" is the **key** to the Measurement Correction, as shown below.
