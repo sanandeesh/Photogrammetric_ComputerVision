@@ -88,6 +88,8 @@ To run within a virtual environment, create a separate virtual environment for t
 
 `pip install -r requirements.txt` Install required packages
 
+Download KITTI data from `https://www.cvlibs.net/datasets/kitti/raw_data.php` (e.g. ` 2011_09_26_drive_0001`)
+
 ## Usage:
 `pytest` Run Unit Tests
 
@@ -99,6 +101,10 @@ To run within a virtual environment, create a separate virtual environment for t
 
 `deactive` Deactivate Virtual Environment before closing terminal.
 
+# Run Foundational V-SLAM\INS Algorithms from Other Labs
+
+I have cloned, compiled, and run foundational V-SLAM\INS algorithms from across the world, and provided results below.
+
 ## ORB-SLAM2 from Universidad de Zaragoza (Raúl Mur-Artal et al)
 - **Original Project Page**: https://webdiis.unizar.es/~raulmur/orbslam/
 - **Original Code**: https://github.com/raulmur/ORB_SLAM2
@@ -106,8 +112,7 @@ To run within a virtual environment, create a separate virtual environment for t
 Please watch: 
 [My ORB-SLAM2 Stereo-KITTI Outputs on YouTube](https://www.youtube.com/watch?v=-Z-bCY-UboU&list=PL9IYlUueNFoa8mLsTHtWhH6aflSdcyqWZ&index=10)
 
-Several minor tweaks were made to run on: 
-- Ubuntu 24.04.4, C++ 14, opencv 4.6.0, eigen3 3.4.0, Pangolin 0.9.5
+Several minor tweaks were made to run on `Ubuntu 24.04.4, C++ 14, opencv 4.6.0, eigen3 3.4.0, Pangolin 0.9.5`
 
 Apply `refactor_for_upgraded_deps_ORBSLAM2.patch` to your cloned ORB-SLAM2 repo to run locally.
 
@@ -127,9 +132,7 @@ Both Mono and Stereo detect the Loop Closure and refine the total Map via Bundle
 Please watch: 
 [My LDSO KITTI Outputs on YouTube](https://www.youtube.com/watch?v=la80GUIY9Ms&list=PL9IYlUueNFoa8mLsTHtWhH6aflSdcyqWZ&index=12)
 
-Few minor tweaks were made to run on:
-
-    Ubuntu 24.04.4, C++ 14, opencv 4.6.0, eigen3 3.4.0, Pangolin 0.9.5
+Few minor tweaks were made to run on `Ubuntu 24.04.4, C++ 14, opencv 4.6.0, eigen3 3.4.0, Pangolin 0.9.5`
 
 Apply `refactor_for_upgraded_deps_LDSO.patch` to your cloned LDSO repo to run locally.
 
@@ -146,27 +149,47 @@ As a monocular SLAM, it accumulates drift\error in the unobservable degrees-of-f
 Upon Loop Closure detection, this accumulated error is resolved by a global Pose-Graph Optimization.
 Nonetheless, as a Monocular SLAM, scale is still ambiguous\unobservable. This is not the case in Stereo ORB-SLAM2 shown previously.
 
+## Open-VINS (Visual-Inertial Navigation-System) by RPNG at University of Delaware (based on MSCKF by Mourikis et al)
+- **Original Project Page**: https://docs.openvins.com/
+- **Original Code**: https://github.com/rpng/open_vins
+
+Please watch my ROS2: 
+[Open-VINS outputs on YouTube](https://www.youtube.com/watch?v=T5rn0CPXXRw&list=PL9IYlUueNFoa8mLsTHtWhH6aflSdcyqWZ&index=15)
+
+Few minor tweaks were made to run on: `Ubuntu 24.04.4, Ros-2 Jazzy`
+
+Apply `refactor_for_upgraded_deps_OpenVINS.patch` to your cloned OpenVINS repo to run locally.
+
+<div align="center">
+    <img src="./images/OpenVINS_ViconRoom1.png" alt="Open-VINS Output" width="90%">
+</div>
+
+MSCKF is considered "the" foundational Visual-INS algorithm.
+MSCKF expresses geometric constraints between static features observed across multiple views\poses _without_ including the 3D feature positions in the EKF state vector, resulting in linear complexity.
+
 ## Resources:
+J. Engel, V. Koltun, and D. Cremers, _Direct Sparse Odometry_, IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 40, no. 3, pp. 611–625, 2018
+
+X. Gao, R. Wang, N. Demmel, and D. Cremers, _LDSO: Direct Sparse Odometry with Loop Closure_, iros, 2018, October
+
 Geiger A, Lenz P, Stiller C, Urtasun R, _Vision meets Robotics: The KITTI Dataset_, International Journal of Robotics Research (IJRR), 2013, https://www.cvlibs.net/datasets/kitti/raw_data.php
+
+Geneva P, Eckenhoff K, Woosik L, Yulin Y, and Guoquan H, "OpenVINS: A Research Platform for Visual-Inertial Estimation"
+Proc. of the IEEE International Conference on Robotics and Automation, 2020, Paris, France, 
+https://github.com/rpng/open_vins
 
 Hartley R, Zisserman A,_Multiple View Geometry in Computer Vision_, 2003, Cambridge University Press, 2nd edition
 
 Ma Y, Soatto S, Kosecká, J, & Sastry S S (2004). _An Invitation to 3-D Vision: From Images to Geometric Models_. Springer-Verlag.
 
+A. I. Mourikis and S. I. Roumeliotis, "A Multi-State Constraint Kalman Filter for Vision-aided Inertial Navigation," Proceedings 2007 IEEE International Conference on Robotics and Automation, Rome, Italy, 2007, pp. 3565-3572, doi: 10.1109/ROBOT.2007.364024.
+
 Qian-Yi Zhou and Jaesik Park and Vladlen Koltun, _{Open3D}: {A} Modern Library for {3D} Data Processing_, arXiv:1801.09847, 2018
 
-Raúl Mur-Artal, and Juan D. Tardós.
-_ORB-SLAM2: an Open-Source SLAM System for Monocular, Stereo and RGB-D Cameras_
+Raúl Mur-Artal, and Juan D. Tardós. _ORB-SLAM2: an Open-Source SLAM System for Monocular, Stereo and RGB-D Cameras_
 ArXiv preprint arXiv:1610.06475, 2016.
 
-Raúl Mur-Artal, J. M. M. Montiel and Juan D. Tardós.
-_ORB-SLAM: A Versatile and Accurate Monocular SLAM System._
-IEEE Transactions on Robotics, vol. 31, no. 5, pp. 1147-1163, October 2015.
-(2015 IEEE Transactions on Robotics Best Paper Award)
-
-J. Engel, V. Koltun, and D. Cremers, _Direct Sparse Odometry_, IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 40,
-no. 3, pp. 611–625, 2018
-
-X. Gao, R. Wang, N. Demmel, and D. Cremers, _LDSO: Direct Sparse Odometry with Loop Closure_, iros, 2018, October
+Raúl Mur-Artal, J. M. M. Montiel and Juan D. Tardós. _ORB-SLAM: A Versatile and Accurate Monocular SLAM System._
+IEEE Transactions on Robotics, vol. 31, no. 5, pp. 1147-1163, October 2015. (2015 IEEE Transactions on Robotics Best Paper Award)
 
 Torralba, A. and Isola, P. and Freeman, W.T. _Foundations of Computer Vision_, 2024, Adaptive Computation and Machine Learning series, MIT Press, https://mitpress.mit.edu/9780262048972/foundations-of-computer-vision/
